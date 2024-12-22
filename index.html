@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brawlhalla Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Brawlhalla Tracker</h1>
+        <p>Search for your stats below:</p>
+        
+        <div class="search">
+            <input type="text" id="playerId" placeholder="Enter Player ID">
+            <button id="searchButton">Search</button>
+        </div>
+        
+        <div id="playerData" class="hidden">
+            <h2>Player Stats</h2>
+            <p><strong>Name:</strong> <span id="playerName"></span></p>
+            <p><strong>Rating:</strong> <span id="playerRating"></span></p>
+            <p><strong>Last Updated:</strong> <span id="playerTimestamp"></span></p>
+        </div>
+    </div>
+</body>
+</html>

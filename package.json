@@ -8,9 +8,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "firebase": "^11.1.0",
     "node-cron": "^3.0.3"
-  }
+  },
+  "description": ""
 }
