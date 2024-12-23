@@ -51,3 +51,13 @@ body {
   #playerData p {
     margin: 5px 0;
   }
+
+#meme {
+    max-width: 100%; /* Makes the image responsive */
+    height: auto; /* Maintains aspect ratio */
+    border: 5px solid #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;
+    display: block;
+}
