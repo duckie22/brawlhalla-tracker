@@ -1,40 +1,70 @@
-// JavaScript source code
-const cron = require("node-cron");
-const { getDatabase, ref, set } = require("firebase/database");
-const { initializeApp } = require("firebase/app");
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+const fetch = require("node-fetch");
 
-// Firebase config
-const firebaseConfig = {
-    apiKey: "AIzaSyCAGuYY12pfsbeebuY5ot9JcgXCnRRQSLs",
-    authDomain: "brawlhalla-database-project.firebaseapp.com",
-    databaseURL: "https://brawlhalla-database-project-default-rtdb.firebaseio.com",
-    projectId: "brawlhalla-database-project",
-    storageBucket: "brawlhalla-database-project.firebasestorage.app",
-    messagingSenderId: "240647397387",
-    appId: "1:240647397387:web:5871d6f5819339ba37270e",
-    measurementId: "G-XG2525LXEH"
-};
+// Initialize Firebase Admin SDK
+admin.initializeApp();
+const db = admin.database();
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+// API URL
+const API_URL = "https://bhapi.338.rocks/v1/ranked/id?brawlhalla_id=3145331";
 
-// Function to update player data
-function updatePlayerData(playerId) {
-    // Simulate API fetch and update Firebase (replace with real API call)
-    const playerData = {
-        name: "Player1",
-        rating: Math.floor(Math.random() * 1000) + 1500, // Example: random rating
-        timestamp: new Date().toISOString(),
-    };
+// Fetch data from the API
+async function fetchPlayerData(brawlhallaId) {
+    try {
+        // Construct the API URL with the player's ID
+        const response = await fetch(`${API_URL.replace("3145331", brawlhallaId)}`);
 
-    set(ref(db, 'players/' + playerId), playerData)
-        .then(() => console.log("Player data updated:", playerData))
-        .catch((error) => console.error("Error updating data:", error));
+        // Check if the response is OK
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Parse the JSON response
+        const fetchedData = await response.json();
+        const ratingHolder = fetchedData.data.rating;
+        const gamesHolder = fetchedData.data.games;
+        const nameHolder = fetchedData.data.name;
+
+        const playerRef = db.ref(`players/${nameHolder}`);
+
+        // Fetch the current data for the player
+        const snapshot = await playerRef.once("value");
+        const playerData = snapshot.val();
+
+        if (!playerData) {
+            // If player does not exist, initialize their data
+            const initialData = {
+                name: nameHolder,
+                rating: [ratingHolder],
+                games: [gamesHolder],
+                timestamp: [new Date().toISOString()],
+            };
+            await playerRef.set(initialData);
+            console.log(`Initialized data for player: ${nameHolder}`);
+        } else {
+            // Append new data to existing arrays
+            const updatedData = {
+                rating: [...(playerData.rating || []), ratingHolder],
+                games: [...(playerData.games || []), gamesHolder],
+                timestamp: [...(playerData.timestamp || []), new Date().toISOString()],
+            };
+
+            await playerRef.update(updatedData);
+            console.log(`Appended data for player: ${nameHolder}`);
+        }
+
+        // Log the fetched values
+        console.log("Player Rating:", ratingHolder);
+        console.log("Player Games:", gamesHolder);
+    } catch (error) {
+        console.error("Error fetching player data:", error);
+    }
 }
 
-// Schedule updates every hour
-cron.schedule("* * * * *", () => {
+// Cloud function to run every minute
+exports.scheduledPlayerDataUpdate = functions.pubsub.schedule("every 1 minutes").onRun(async (context) => {
     console.log("Running update every minute...");
-    updatePlayerData("123457"); // Replace "123456" with your test player ID
+    await fetchPlayerData("9972715"); // Replace with your test player ID
+    return null; // Must return a promise or null
 });

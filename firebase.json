@@ -1,4 +1,12 @@
 {
+  "emulators": {
+    "functions": {
+      "port": 5001
+    },
+    "pubsub": {
+      "port": 8085
+    }
+  },
   "hosting": {
     "public": "public",
     "ignore": [
@@ -12,5 +20,22 @@
         "destination": "/index.html"
       }
     ]
-  }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "nodejs18",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ]
 }

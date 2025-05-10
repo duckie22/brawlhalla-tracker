@@ -1,38 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> 
-    <meta charset="UTF-8"> 
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brawlhalla Tracker</title>
+    <title>Brawlhalla Player Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="data:," />
-    <script type="module" src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
-    <script type="module" src="script.js"></script>
 </head>
-<body>
-    <div class="container">
-        <h1>Brawlhalla Tracker</h1>
-        <p>Search for your stats below:</p>
+<body>  
+    <h1>Brawlhalla Player Tracker</h1>
 
-        <div class="search">
-            <input type="text" id="playerId" placeholder="Enter Player ID">
-            <button id="searchButton">Search</button>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h2>Welcome to Brawlhalla History Tracker v1.0.0 Beta</h2>
+            <p>Here are some instructions on using the website:</p>
+            <ul>
+                <li>To register yourself please enter your Brawlhalla ID (usually a 7 digit code, found within the drop down in the top right corner of your Brawlhalla application)</li>
+                <li>Given this website is still in Beta, tracking data may be reset at any point. Also,the # of users or rate of update might be limited due to rate limitations.</li>
+                <li>If you have any inquiries you can contact me at dojoduckie@gmail.com (: </li>
+            </ul>
+            <button id="close-btn">Close</button>
         </div>
-
-        <div id="playerData" class="hidden">
-            <h2>Player Stats</h2>
-            <p><strong>Name:</strong> <span id="playerName"></span></p>
-            <p><strong>Rating:</strong> <span id="playerRating"></span></p>
-            <p><strong>Last Updated:</strong> <span id="playerTimestamp"></span></p>
-        </div>
-
-
-        <div>
-            <h2>Here’s a silly meme for you!</h2>
-            <img src="CatThumb.png" alt="A silly meme" id="meme">
-        </div>
-
     </div>
+
+    <!-- Player Name Search -->
+    <div>
+        <input type="text" id="playerNameInput" placeholder="Enter Your IGN">
+        <button id="searchButton">Search</button>
+    </div>
+
+    <!-- New Brawlhalla ID Entry -->
+    <div>
+        <input type="text" id="brawlhallaIDInput" placeholder="Enter Brawlhalla ID">
+        <button id="addButton">Save</button>
+        <p id="idFeedback" style="color: red;"></p>
+    </div>
+
+    <!-- Chart Container -->
+    <div id="chartContainer" class="hidden">
+        <canvas id="playerChart"></canvas>
+    </div>
+
+    <script type="module" src="script.js"></script>
 </body>
 </html>
